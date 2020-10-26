@@ -38,6 +38,8 @@
 (global-set-key "\C-x\C-d" 'dired)
 (global-set-key [?\s-p] 'comint-previous-input)
 
+(setq ring-bell-function 'ignore)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
