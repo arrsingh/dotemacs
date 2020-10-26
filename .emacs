@@ -40,6 +40,7 @@
 
 (setq ring-bell-function 'ignore)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -130,3 +131,7 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "GOPATH"))
+
+(require 'go-guru)
+(go-guru-hl-identifier-mode)
+(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
