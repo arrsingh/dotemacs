@@ -6,7 +6,7 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
-(add-to-list 'default-frame-alist '(foreground-color . "LightSeaGreen"))
+(add-to-list 'default-frame-alist '(foreground-color . "MediumAquamarine"))
 (add-to-list 'default-frame-alist '(background-color . "black"))
 
 ;disable menu bar and toolbar
@@ -135,3 +135,13 @@
 (require 'go-guru)
 (go-guru-hl-identifier-mode)
 (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+
+(defun up-slightly () (interactive) (scroll-up 5))
+(defun down-slightly () (interactive) (scroll-down 5))
+(global-set-key [mouse-4] 'down-slightly)
+(global-set-key [mouse-5] 'up-slightly)
+
+(global-set-key "\M-v" 'down-slightly)
+(global-set-key "\C-v" 'up-slightly)
+
+(global-set-key "\M-g" 'goto-line)
