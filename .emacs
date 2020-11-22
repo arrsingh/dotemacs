@@ -145,3 +145,5 @@
 (global-set-key "\C-v" 'up-slightly)
 
 (global-set-key "\M-g" 'goto-line)
+
+(setq indent-tabs-mode nil)
