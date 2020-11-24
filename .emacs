@@ -80,6 +80,11 @@
   (interactive)
   (run-make "run"))
 
+(defun make-check ()
+  "Run make run without arguments"
+  (interactive)
+  (run-make "check"))
+
 (defun make-clean ()
   "Run make run without arguments"
   (interactive)
@@ -114,9 +119,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(indent-tabs-mode nil)
  '(package-selected-packages
-   (quote
-	(go-autocomplete auto-complete exec-path-from-shell go-mode magit))))
+   '(rust-mode go-autocomplete auto-complete exec-path-from-shell go-mode magit)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -145,5 +150,4 @@
 (global-set-key "\C-v" 'up-slightly)
 
 (global-set-key "\M-g" 'goto-line)
-
-(setq indent-tabs-mode nil)
+(setq rust-format-on-save t)
