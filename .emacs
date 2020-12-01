@@ -121,7 +121,7 @@
  ;; If there is more than one, they won't work right.
  '(indent-tabs-mode nil)
  '(package-selected-packages
-   '(rust-mode go-autocomplete auto-complete exec-path-from-shell go-mode magit)))
+   '(helm-projectile projectile helm rust-mode go-autocomplete auto-complete exec-path-from-shell go-mode magit)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -151,3 +151,15 @@
 
 (global-set-key "\M-g" 'goto-line)
 (setq rust-format-on-save t)
+
+(global-set-key (kbd "C-x C-f") #'helm-find-files)
+(global-set-key (kbd "M-x") #'helm-M-x)
+
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") 'helm-mini)
+
+(helm-mode 1)

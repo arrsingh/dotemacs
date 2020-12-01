@@ -1,0 +1,15 @@
+;;; -*- coding: utf-8 -*-
+(("/Users/rahul.singh/workspace/rust/test_app/"
+  (dired-filename . "/Users/rahul.singh/workspace/rust/test_app/src"))
+ ("/Users/rahul.singh/workspace/rust/"
+  (dired-filename . "/Users/rahul.singh/workspace/rust/test_app"))
+ ("/Users/rahul.singh/workspace/rust/test_app/src/"
+  (dired-filename . "/Users/rahul.singh/workspace/rust/test_app/src/main.rs"))
+ ("/Users/rahul.singh/workspace/rust/test_app/src/main.rs" . 44)
+ ("/Users/rahul.singh/"
+  (dired-filename . "/Users/rahul.singh/.emacs.d"))
+ ("/Users/rahul.singh/.emacs.d/"
+  (dired-filename . "/Users/rahul.singh/.emacs.d/elisp"))
+ ("/Users/rahul.singh/.emacs.d/.cache/recentf" . 1101)
+ ("/Users/rahul.singh/.emacs.d/.cache/layouts/persp-auto-save" . 3269)
+ ("/Users/rahul.singh/.spacemacs" . 25916))
