@@ -1,13 +1,13 @@
 ; Set background and foreground colors
 
+(add-to-list 'default-frame-alist '(foreground-color . "MediumAquamarine"))
+(add-to-list 'default-frame-alist '(background-color . "black"))
+
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
-
-(add-to-list 'default-frame-alist '(foreground-color . "MediumAquamarine"))
-(add-to-list 'default-frame-alist '(background-color . "black"))
 
 ;disable menu bar and toolbar
 (menu-bar-mode -1)
@@ -121,7 +121,9 @@
  ;; If there is more than one, they won't work right.
  '(indent-tabs-mode nil)
  '(package-selected-packages
-   '(helm-projectile projectile helm rust-mode go-autocomplete auto-complete exec-path-from-shell go-mode magit)))
+   (quote
+    (company cargo helm-projectile projectile helm rust-mode exec-path-from-shell go-mode magit lsp-mode))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -129,17 +131,18 @@
  ;; If there is more than one, they won't work right.
  )
 
-(require 'go-autocomplete)
-(require 'auto-complete-config)
-(ac-config-default)
+;(require 'go-autocomplete)
+;(require 'auto-complete-config)
+;(require 'auto-complete)
+;(ac-config-default)
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "GOPATH"))
 
-(require 'go-guru)
-(go-guru-hl-identifier-mode)
-(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+;(require 'go-guru)
+;(go-guru-hl-identifier-mode)
+;(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
 
 (defun up-slightly () (interactive) (scroll-up 5))
 (defun down-slightly () (interactive) (scroll-down 5))
@@ -167,5 +170,6 @@
 (require 'lsp-mode)
 (add-hook 'rust-mode-hook #'lsp)
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
+(require 'rust-mode)
 (define-key rust-mode-map (kbd "M-n") 'next-error)
 (define-key rust-mode-map (kbd "M-p") 'previous-error)
