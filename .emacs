@@ -163,3 +163,9 @@
 
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x b") 'helm-mini)
+
+(require 'lsp-mode)
+(add-hook 'rust-mode-hook #'lsp)
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+(define-key rust-mode-map (kbd "M-n") 'next-error)
+(define-key rust-mode-map (kbd "M-p") 'previous-error)
