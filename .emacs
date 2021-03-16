@@ -27,8 +27,12 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;;Tabs are 4 spaces
 (setq-default tab-width 4)
-;;Elisp files go in .elisp
-(add-to-list 'load-path "~/.emacs.d/elisp/")
+
+;; Install tide mode manually from the github source so that we can
+;; get the latest version that supports handling identifiers that span
+;; multiple lines
+(add-to-list 'load-path "~/.emacs.d/tide")
+(require 'tide)
 
 (require 'package)
 (add-to-list 'package-archives
@@ -121,8 +125,7 @@
  ;; If there is more than one, they won't work right.
  '(indent-tabs-mode nil)
  '(package-selected-packages
-   (quote
-    (company cargo helm-projectile projectile helm rust-mode exec-path-from-shell go-mode magit lsp-mode))))
+   '(use-package doom-modeline doom-themes all-the-icons neotree yasnippet web-mode rjsx-mode typescript-mode lsp-ui company cargo helm-projectile projectile helm rust-mode exec-path-from-shell go-mode magit lsp-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -173,3 +176,87 @@
 (require 'rust-mode)
 (define-key rust-mode-map (kbd "M-n") 'next-error)
 (define-key rust-mode-map (kbd "M-p") 'previous-error)
+
+(define-key rust-mode-map (kbd "C-c C-t") 'cargo-process-test)
+(define-key rust-mode-map (kbd "C-c C-b") 'cargo-process-build)
+(define-key rust-mode-map (kbd "C-c C-r") 'cargo-process-run)
+
+(global-set-key (kbd "s-n") nil)
+
+;; redefine cargo-process test to use -- --nocapture
+(defun cargo-process-test ()
+  "Run the Cargo test command.
+With the prefix argument, modify the command's invocation.
+Cargo: Run the tests."
+  (interactive)
+  (cargo-process--start "Test" "cargo test -- --nocapture"))
+
+(global-set-key (kbd "C-c C-t") 'cargo-process-test)
+(global-set-key (kbd "C-c C-b") 'cargo-process-build)
+(global-set-key (kbd "C-c C-r") 'cargo-process-run)
+(global-set-key (kbd "C-c C-o") 'comment-region)
+(global-set-key (kbd "C-c C-u") 'uncomment-region)
+(global-set-key (kbd "C-c C-h") 'lsp-describe-thing-at-point)
+(setq lsp-ui-doc-enable nil)
+
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+;; enable typescript-tslint checker
+(require 'flycheck)
+(flycheck-add-mode 'typescript-tslint 'web-mode)
+
+(setq projectile-switch-project-action 'neotree-projectile-action)
+(setq neo-smart-open t)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(add-to-list 'load-path "~/.emacs.d/w3m-20210226.23")
+
+(require 'w3m)
+
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-vibrant t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  ;;(setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  ;;(doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
+(set-frame-font "Menlo:pixelsize=14")

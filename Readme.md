@@ -1,4 +1,3 @@
-
 After linking .emacs install all the packages with:
 
 M-x package-refresh-contents
