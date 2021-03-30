@@ -12,6 +12,9 @@
 ;disable menu bar and toolbar
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(scroll-bar-mode -1)
+(setq display-time-day-and-date t)
+(display-time-mode 1)
 
 ;Use zshell as the shell
 (setq explicit-shell-file-name "/bin/zsh")
@@ -58,41 +61,50 @@
   (interactive)
   (shell (read-no-blanks-input "Shell Name: " "*shell*")))
 
-(defun run-make (&optional arg)
-  "Invoke make with an argument"
-  (compile (concat "make " arg))
-;  (switch-to-buffer "*compilation*")
-  (goto-char (point-max)))
+;; (defun run-just ()
+;;   "Run the Cargo run command.
+;; With the prefix argument, modify the command's invocation.
+;; Cargo: Build and execute src/main.rs."
+;;   (interactive)
+;;   (cargo-process--start "Run" "just test"))
 
-(defun make ()
-  "Invoke the make command without arguments"
-  (interactive)
-  (run-make ""))
+(defun compile-in-dir (dir command)
+  (let ((default-directory dir))
+    (compile command)))
 
-(defun make-test ()
-  "Run make test without arguments"
-  (interactive)
-  (run-make "test"))
+(defun run-just (&optional arg)
+  "Invoke just with an argument"
+  (compile-in-dir (magit-toplevel) (concat "just " arg)))
 
-(defun make-install ()
-  "Run make test without arguments"
+(defun just ()
+  "Invoke the just command without arguments"
   (interactive)
-  (run-make "install"))
+  (run-just ""))
 
-(defun make-run ()
-  "Run make run without arguments"
+(defun just-test ()
+  "Run just test without arguments"
   (interactive)
-  (run-make "run"))
+  (run-just "test"))
 
-(defun make-check ()
-  "Run make run without arguments"
+(defun just-run ()
+  "Run just run without arguments"
   (interactive)
-  (run-make "check"))
+  (run-just "run"))
 
-(defun make-clean ()
-  "Run make run without arguments"
+(defun just-clean ()
+  "Run just run without arguments"
   (interactive)
-  (run-make "clean"))
+  (run-just "clean"))
+
+(defun just-doc ()
+  "Run just run without arguments"
+  (interactive)
+  (run-just "doc"))
+
+(defun just-build ()
+  "Run just run without arguments"
+  (interactive)
+  (run-just "build"))
 
 (defun cdshell()
   (interactive)
@@ -125,7 +137,7 @@
  ;; If there is more than one, they won't work right.
  '(indent-tabs-mode nil)
  '(package-selected-packages
-   '(use-package doom-modeline doom-themes all-the-icons neotree yasnippet web-mode rjsx-mode typescript-mode lsp-ui company cargo helm-projectile projectile helm rust-mode exec-path-from-shell go-mode magit lsp-mode)))
+   '(prettier use-package doom-modeline doom-themes all-the-icons neotree yasnippet web-mode rjsx-mode typescript-mode lsp-ui company cargo helm-projectile projectile helm rust-mode exec-path-from-shell go-mode magit lsp-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -177,9 +189,10 @@
 (define-key rust-mode-map (kbd "M-n") 'next-error)
 (define-key rust-mode-map (kbd "M-p") 'previous-error)
 
-(define-key rust-mode-map (kbd "C-c C-t") 'cargo-process-test)
-(define-key rust-mode-map (kbd "C-c C-b") 'cargo-process-build)
-(define-key rust-mode-map (kbd "C-c C-r") 'cargo-process-run)
+(define-key rust-mode-map (kbd "C-c C-t") 'just-test)
+(define-key rust-mode-map (kbd "C-c C-b") 'just-build)
+(define-key rust-mode-map (kbd "C-c C-r") 'just-run)
+(define-key rust-mode-map (kbd "C-c C-g") 'just-doc)
 
 (global-set-key (kbd "s-n") nil)
 
@@ -191,12 +204,15 @@ Cargo: Run the tests."
   (interactive)
   (cargo-process--start "Test" "cargo test -- --nocapture"))
 
-(global-set-key (kbd "C-c C-t") 'cargo-process-test)
-(global-set-key (kbd "C-c C-b") 'cargo-process-build)
-(global-set-key (kbd "C-c C-r") 'cargo-process-run)
+(global-set-key (kbd "C-c C-t") 'just-test)
+(global-set-key (kbd "C-c C-b") 'just-build)
+(global-set-key (kbd "C-c C-r") 'just-run)
+(global-set-key (kbd "C-c C-g") 'just-doc)
 (global-set-key (kbd "C-c C-o") 'comment-region)
 (global-set-key (kbd "C-c C-u") 'uncomment-region)
 (global-set-key (kbd "C-c C-h") 'lsp-describe-thing-at-point)
+(global-set-key (kbd "C-c C-j") 'just)
+
 (setq lsp-ui-doc-enable nil)
 
 (defun setup-tide-mode ()
@@ -259,4 +275,11 @@ Cargo: Run the tests."
   :ensure t
   :init (doom-modeline-mode 1))
 
-(set-frame-font "Menlo:pixelsize=14")
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (toggle-read-only)
+  (ansi-color-apply-on-region compilation-filter-start (point))
+  (toggle-read-only))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+(setq confirm-kill-emacs 'yes-or-no-p)
